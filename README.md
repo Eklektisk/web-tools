@@ -28,13 +28,17 @@ If you are able to, please read both scripts before running them to see what dir
 ### Layout ###
 The workspace is currently divided into four folders.
 
+#### Templates ####
 The templates folder contains all website templates. Templates ending in \_testing.html will generate test pages that can be viewed locally. Templates ending in \_production.html will generate pages to be uploaded to your server. These pages may not properly display when viewed locally.
 
+#### Pages ####
 The pages folder contains all content for the website. This only includes page-specific information. This content will later be insered into your templates.
 
+#### Testing ####
 The testing folder contains templated web pages that can be viewed locally. This takes content from your pages folder and inserts it into the testing template. This is useful for testing a page before publishing it.
 
-The testing folder contains templated web pages to be uploaded to the server. This takes content from your pages folder and inserts it into the production template. This also contains all auto-generated content that typically does not need to modified (ie. rss.xml). These files may not display properly if viewed locally.
+#### Production ####
+The production folder contains templated web pages to be uploaded to the server. This takes content from your pages folder and inserts it into the production template. This also contains all auto-generated content that typically does not need to modified (ie. rss.xml). These files may not display properly if viewed locally.
 
 ### Scripts ###
 There are four general-purpose scripts and two scripts that aid post generation for blogs.
