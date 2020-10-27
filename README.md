@@ -53,7 +53,7 @@ This uses the supplied template to create a page in the appropritate folder. Thi
 #### unsafe\_gen\_page ####
 Usage:
 ```bash
-./unsafe\_gen_page <page/html_file> <template/your_template> (title)
+./unsafe_gen_page <page/html_file> <template/your_template> (title)
 ```
 This functions the same as `gen_page`. However, it assumes that the title, if provided, already escapes all necessary characters. Do not use this unless you know what are doing.
 
@@ -64,7 +64,7 @@ Usage:
 ```
 This copies files directly from the pages folder to the chosen folder(s). Unlike gen\_page, this will not apply a template to the chosen file.
 
-#### updage\_website ####
+#### update\_website ####
 Usage:
 ```bash
 ./update_website
@@ -91,7 +91,7 @@ All comments that appear in files are there for a reason! Please do not remove t
 All scripts provided are fairly small. As long as you have a basic understanding of bash/shell commands and chains, the scripts should be easy to read (with `push_post` being the longest at 79 lines).
 
 ## Additional Help or Contributing ##
-If anything in the README or in a script is unclear, feel free to open an issue or make a pull request! I'm not always concise and sometimes get too wrapped up in the specifics of a subject that I fail to properly explain the basics.
+If anything in the README or in a script is unclear, feel free to open an issue or make a pull request! I'm not always concise and sometimes get too wrapped up in the specifics that I fail to properly explain the basics.
 
 Any contributions or ideas are appreciated! While I want to leave this as a basic set of scripts for others to hack onto, I at least want to provide a functional set of scripts that work out of the box.
 
