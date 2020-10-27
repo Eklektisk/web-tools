@@ -1,0 +1,80 @@
+#!/bin/bash
+
+BASE_URL='https://eklektiskiscoding.xyz'
+
+function create_page() {
+  TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
+  ./unsafe_gen_page "$1" "templates/base_production.html" "$TITLE"
+}
+
+function add_to_blog() {
+  NAME="$(basename $1)"
+  DIR="$(dirname $1 | sed 's/^pages\/\?//')"
+  [[ -z "$DIR" ]] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
+
+  HEADER="$(date +"%B %Y")"
+  DATE="$(date +"%Y %b %d")"
+  TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
+
+  RAMTMP=$(mktemp)
+
+  if [ -z "$(grep "<h2>$HEADER</h2>" pages/blog.html)" ]; then
+    echo -e "<h2>$HEADER</h2>\n<ul>\n\t<!-- $HEADER -->\n</ul>" > $RAMTMP
+    sed -i "/<!-- Insert content here! -->/r $RAMTMP" pages/blog.html
+  fi
+  
+  echo -e "\t<li>$DATE - <a href=\"/$(sed 's/\.html$//g' <<< $FILENAME)\">$TITLE</a></li>" > $RAMTMP
+  sed -i "/<!-- $HEADER -->/r $RAMTMP" pages/blog.html
+
+  rm $RAMTMP
+
+  ./unsafe_gen_page "pages/blog.html" "templates/base_production.html" "Blog"
+}
+
+function insert_tag() {
+  # tag_name description indents new_line
+
+  TAB='  '
+  [ "$4" -eq 1 ] && LINE="<$1>\n$(echo -e "$2" | sed "s/.*/$TAB&/g")\n</$1>" || LINE="<$1>$2</$1>"
+
+  echo -e "$LINE" | sed "s/.*/$(for (( i = 0; i < $3; ++i )); do printf "$TAB"; done)&/"
+}
+
+function add_to_rss() {
+  NAME="$(basename $1)"
+  DIR="$(dirname $1 | sed 's/^pages\/\?//')"
+  [[ -z "$DIR" ]] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
+
+  TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
+  URL="$BASE_URL$(sed 's/\.html$//g' <<< $FILENAME)"
+  DATE="$(date +'%a, %d %b %Y %H:%M:%S %z')"
+  DESCRIPTION="<![CDATA[\n$(tail -n+2 $1 | sed 's/.*/  &/g; /^  $/d')\n]]>"
+
+  RAMTMP="$(mktemp)"
+
+  echo -e "$(insert_tag "item" "$(insert_tag "title" "$TITLE" 0 0)
+$(insert_tag "guid" "$URL" 0 1)
+$(insert_tag "pubDate" "$DATE" 0 0)
+$(insert_tag "description" "$DESCRIPTION" 0 1)" 2 1)" > $RAMTMP
+
+  sed -i "/<!-- gen_posts -->/r $RAMTMP" "production/rss.xml"
+  rm $RAMTMP
+}
+
+
+if [ "$#" -eq 0 ]; then
+  echo 'Usage: push_post <path to post>'
+  
+else
+  create_page $1
+
+  read -p "Update blog? [y/N]: " UPDATE
+  case "$UPDATE" in
+    [Yy]*) add_to_blog "$1" && add_to_rss "$1" ;;
+    *) ;;
+  esac
+
+fi
+
+exit 0
+

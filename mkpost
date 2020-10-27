@@ -1,0 +1,25 @@
+#!/bin/bash
+
+while [ -z "$TITLE" ]; do
+  read -p "Enter post title: " TITLE
+done
+
+FILENAME="pages/posts/$(sed 's/./\L&/g; s/[^a-z0-9 -]/_/g; s/ /_/g; s/_\+/_/g; s/^_\+//; s/_\+$//;' <<< "$TITLE").html"
+
+if [ -f "$FILENAME" ]; then
+  read -p "Post \"$TITLE\" already exists; overwrite it? [y/N] " OVERWRITE
+  case $OVERWRITE in
+    [Yy]* ) ;;
+    * ) exit 0 ;;
+  esac
+fi
+
+echo "<h2>$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$TITLE")</h2>
+" > "$FILENAME"
+
+read -p "Post \"$TITLE\" created, edit post? [Y/n] " EDIT_CONFIRM
+case $EDIT_CONFIRM in
+  [Nn]* ) exit 0 ;;
+  * ) exec nvim "$FILENAME" -c '$' ;;
+esac
+

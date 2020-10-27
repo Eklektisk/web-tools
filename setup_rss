@@ -1,0 +1,29 @@
+#!/bin/bash
+
+mkdir pages/posts
+mkdir production/posts
+
+read -p 'Enter a title for your blog: ' TITLE
+read -p 'Enter a description for your blog: ' DESCRIPTION
+read -p 'Enter the domain name for your website: ' URL
+
+echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
+  <channel>
+    <title>$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$TITLE")</title>
+    <description>
+      $(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$DESCRIPTION")
+    </description>
+    <language>en-us</language>
+    <link>https://$URL/rss.xml</link>
+    <atom:link href=\"https://$URL/rss.xml\" rel=\"self\" type=\"application/rss+xml\"/>
+    <!-- gen_posts -->
+    </channel>
+</rss>" > production/rss.xml
+
+echo "<p>You can <a href=\"/rss.xml\">subscribe to this blog</a> by adding the RSS link to your preferred reader.</p>
+<!-- Insert content here! -->" > pages/blog.html
+
+echo 'Blog system and RSS feed set up!'
+exit 0
+

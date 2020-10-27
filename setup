@@ -1,0 +1,65 @@
+#!/bin/bash
+
+mkdir pages
+mkdir templates
+mkdir testing
+mkdir production
+
+read -p 'Enter a title for your page: ' TITLE
+
+echo "<!DOCTYPE html>
+<html lang=\"en-us\">
+	<head>
+		<meta charset=\"utf-8\" />
+		<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"/>
+		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+		<title>$TITLE</title>
+		<link rel=\"stylesheet\" href=\"style.css\" />
+	</head>
+	<body>
+		<main>
+			<!-- Insert content here! -->
+		</main>
+	</body>
+</html>
+" > templates/base_testing.html
+
+echo "<!DOCTYPE html>
+<html lang=\"en-us\">
+	<head>
+		<meta charset=\"utf-8\" />
+		<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\"/>
+		<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+		<title>$TITLE</title>
+		<link rel=\"stylesheet\" href=\"/style.css\" />
+	</head>
+	<body>
+		<main>
+			<!-- Insert content here! -->
+		</main>
+	</body>
+</html>
+" > templates/base_production.html
+
+touch pages/style.css
+
+echo ''
+read -p 'Do you want to add a blog now? [y/N] ' ADD_RSS
+case "$ADD_RSS" in
+  [Yy]*) echo ''; ./setup_rss ;;
+  *) ;;
+esac
+
+echo ''
+read -p 'Do you want to delete the example folder? [Y/n] ' DELETE_EXAMPLE
+case "$DELETE_EXAMPLE" in
+  [Nn]*) ;;
+  *) rm -r example/ ;;
+esac
+
+echo '
+Basic configuration is set up!
+Before continuing, make sure you have read README.md to understand how this workspace is currently configured and how to modify it.'
+
+exit 0
+

@@ -1,0 +1,31 @@
+#!/bin/bash
+ 
+function run_update() {
+  for FILE in $(find "$1" -iname '*.html'); do
+    [ ! -z "$(grep '<title>.*|' $FILE)" ] &&
+      ./gen_page "$(sed "s/$1/pages/" <<< $FILE)" "$2" "$(sed -n 's/.*<title>.*| \(.*\)<\/title>.*/\1/p;' $FILE)" ||
+      ./gen_page "$(sed "s/$1/pages/" <<< $FILE)" "$2"
+  done
+}
+
+echo 'OPTIONS:
+1 - Refresh testing
+2 - Refresh production
+3 - Refresh both'
+
+while true; do
+  read -p "Choose an option: " REF_OPTION
+  
+  case $REF_OPTION in
+    '1') ;;
+    '2') ;;
+    '3') ;;
+    *) continue ;;
+  esac
+
+  break
+done
+
+[ "$((REF_OPTION & 1))" -ne 0 ] && run_update 'testing' 'templates/base_testing.html'
+[ "$((REF_OPTION & 2))" -ne 0 ] && run_update 'production' 'templates/base_production.html'
+

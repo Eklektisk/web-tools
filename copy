@@ -1,0 +1,52 @@
+#!/bin/bash
+
+function create() {
+  # folder directory name
+  [[ -z "$2" ]] && FILE="$NAME" || FILE="$DIR/$NAME"
+
+  [ -d "$1/$2" ] && mkdir -p "$1/$2"
+  cp -r "pages/$FILE" "$1/$FILE"
+}
+
+NAME="$(basename $1)"
+DIR="$(dirname $1 | sed 's/^pages\/\?//')"
+
+case "$2" in
+  testing)
+    REF_OPTION=1
+    ;;
+
+  production)
+    REF_OPION=2
+    ;;
+
+  both)
+    REF_OPTION=3
+    ;;
+
+  *)
+    echo "ERROR: Unspecified folder $2 provided."
+    echo 'Copy content to:'
+    echo '  1: testing'
+    echo '  2: production'
+    echo '  3: both'
+
+  while true; do
+    read -p "Choose an option: " REF_OPTION
+    
+    case $REF_OPTION in
+      '1') ;;
+      '2') ;;
+      '3') ;;
+      *) continue ;;
+    esac
+
+    break
+  done
+  ;;
+
+esac
+
+[ "$((REF_OPTION & 1))" -ne 0 ] && create 'testing' "$DIR" "$NAME"
+[ "$((REF_OPTION & 2))" -ne 0 ] && create 'production' "$DIR" "$NAME"
+
