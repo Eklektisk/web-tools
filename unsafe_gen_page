@@ -4,7 +4,7 @@ NAME="$(basename $1)"
 DIR="$(dirname $1 | sed 's/^pages\/\?//')"
 [[ -z "$DIR" ]] && FILE="$NAME" || FILE="$DIR/$NAME"
 
-TAB="$(grep "Insert content here!" $2 | sed -e 's/<!-- Insert content here! -->.*//')"
+TAB="$(grep "wt" $2 | sed -e 's/<!-- wt -->.*//')"
 [[ -z "$(echo "$2" | grep "testing")" ]] && FOLDER='production' || FOLDER='testing'
 
 RAMTMP=$(mktemp)
@@ -14,8 +14,8 @@ sed -i "s/.*/$TAB&/" $RAMTMP
 mkdir -p $FOLDER/$DIR
 cp $2 $FOLDER/$FILE
 
-sed -i "/<!-- Insert content here! -->/r $RAMTMP" $FOLDER/$FILE
-sed -i '/<!-- Insert content here! -->/d' $FOLDER/$FILE
+sed -i "/<!-- wt -->/r $RAMTMP" $FOLDER/$FILE
+sed -i '/<!-- wt -->/d' $FOLDER/$FILE
 
 [ "$#" -ge 3 ] && sed -i "s/<\/title>/ | $3&/" $FOLDER/$FILE
 

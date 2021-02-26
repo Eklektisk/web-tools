@@ -20,7 +20,7 @@ function add_to_blog() {
 
   if [ -z "$(grep "<h2>$HEADER</h2>" pages/blog.html)" ]; then
     echo -e "<h2>$HEADER</h2>\n<ul>\n\t<!-- $HEADER -->\n</ul>" > $RAMTMP
-    sed -i "/<!-- Insert content here! -->/r $RAMTMP" pages/blog.html
+    sed -i "/<!-- wt -->/r $RAMTMP" pages/blog.html
   fi
   
   echo -e "\t<li>$DATE - <a href=\"/$(sed 's/\.html$//g' <<< $FILENAME)\">$TITLE</a></li>" > $RAMTMP
@@ -46,7 +46,7 @@ function add_to_rss() {
   [[ -z "$DIR" ]] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
 
   TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
-  URL="$BASE_URL$(sed 's/\.html$//g' <<< $FILENAME)"
+  URL="$BASE_URL/$(sed 's/\.html$//g' <<< $FILENAME)"
   DATE="$(date +'%a, %d %b %Y %H:%M:%S %z')"
   DESCRIPTION="<![CDATA[\n$(tail -n+2 $1 | sed 's/.*/  &/g; /^  $/d')\n]]>"
 
@@ -60,7 +60,6 @@ $(insert_tag "description" "$DESCRIPTION" 0 1)" 2 1)" > $RAMTMP
   sed -i "/<!-- gen_posts -->/r $RAMTMP" "production/rss.xml"
   rm $RAMTMP
 }
-
 
 if [ "$#" -eq 0 ]; then
   echo 'Usage: push_post <path to post>'

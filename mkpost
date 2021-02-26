@@ -20,6 +20,13 @@ echo "<h2>$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$TI
 read -p "Post \"$TITLE\" created, edit post? [Y/n] " EDIT_CONFIRM
 case $EDIT_CONFIRM in
   [Nn]* ) exit 0 ;;
-  * ) exec nvim "$FILENAME" -c '$' ;;
+  * )
+    if [ -z "$EDITOR" ]; then
+      [ -z "$VISUAL" ] && EDITOR='vim' || EDITOR="$VISUAL"
+    fi
+
+    exec $EDITOR "$FILENAME" -c '$'
+    ;;
+
 esac
 
