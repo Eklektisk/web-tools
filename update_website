@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/bin/sh
  
-function run_update() {
+run_update() {
   for FILE in $(find "$1" -iname '*.html'); do
     [ ! -z "$(grep '<title>.*|' $FILE)" ] &&
-      ./gen_page "$(sed "s/$1/pages/" <<< $FILE)" "$2" "$(sed -n 's/.*<title>.*| \(.*\)<\/title>.*/\1/p;' $FILE)" ||
-      ./gen_page "$(sed "s/$1/pages/" <<< $FILE)" "$2"
+      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$2" "$(
+        sed -n 's/.*<title>.*| \(.*\)<\/title>.*/\1/p;' $FILE)" ||
+      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$2"
   done
 }
 
@@ -14,7 +15,8 @@ echo 'OPTIONS:
 3 - Refresh both'
 
 while true; do
-  read -p "Choose an option: " REF_OPTION
+  read "Choose an option: " REF_OPTION
+  echo
   
   case $REF_OPTION in
     '1') ;;

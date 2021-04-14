@@ -1,24 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-NAME="$(basename $1)"
-DIR="$(dirname $1 | sed 's/^pages\/\?//')"
-[[ -z "$DIR" ]] && FILE="$NAME" || FILE="$DIR/$NAME"
-
-TAB="$(grep "wt" $2 | sed -e 's/<!-- wt -->.*//')"
-[[ -z "$(echo "$2" | grep "testing")" ]] && FOLDER='production' || FOLDER='testing'
-
-RAMTMP=$(mktemp)
-cp $1 $RAMTMP
-sed -i "s/.*/$TAB&/" $RAMTMP
-
-mkdir -p $FOLDER/$DIR
-cp $2 $FOLDER/$FILE
-
-sed -i "/<!-- wt -->/r $RAMTMP" $FOLDER/$FILE
-sed -i '/<!-- wt -->/d' $FOLDER/$FILE
-
-[ "$#" -ge 3 ] && sed -i "s/<\/title>/ | $(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$3")&/" $FOLDER/$FILE
-
-echo "Created page $FOLDER/$FILE"
-rm $RAMTMP
+[ "$#" -ge 3] &&
+  exec ./unsafe_gen_page "$1" "$2" "$(./encode_text "$3")" ||
+  exec ./unsafe_gen_page "$1" "$2"
 

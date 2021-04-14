@@ -1,15 +1,33 @@
-#!/bin/bash
+#!/bin/sh
 
 NAME="$(basename $1)"
 DIR="$(dirname $1 | sed 's/^pages\/\?//')"
-[[ -z "$DIR" ]] && FILE="$NAME" || FILE="$DIR/$NAME"
+[ -z "$DIR" ] && FILE="$NAME" || FILE="$DIR/$NAME"
 
 TAB="$(grep "wt" $2 | sed -e 's/<!-- wt -->.*//')"
-[[ -z "$(echo "$2" | grep "testing")" ]] && FOLDER='production' || FOLDER='testing'
+[ -z "$(echo "$2" | grep "testing")" ] &&
+  FOLDER='production' ||
+  FOLDER='testing'
 
 RAMTMP=$(mktemp)
-cp $1 $RAMTMP
-sed -i "s/.*/$TAB&/" $RAMTMP
+awk 'BEGIN { add_tab=1 }
+
+NR > 1 {
+  if (line != "" && add_tab == 1)
+    print "'"$TAB"'"line;
+  else
+    print line;
+}
+{
+  if (line ~ /.*<pre>.*/) {
+    add_tab=0;
+  } else if (line ~ /.*<\/pre>.*/) {
+    add_tab=1;
+  }
+}
+{ line=$0; }
+
+END {print $0}' $1 > $RAMTMP
 
 mkdir -p $FOLDER/$DIR
 cp $2 $FOLDER/$FILE
@@ -17,7 +35,8 @@ cp $2 $FOLDER/$FILE
 sed -i "/<!-- wt -->/r $RAMTMP" $FOLDER/$FILE
 sed -i '/<!-- wt -->/d' $FOLDER/$FILE
 
-[ "$#" -ge 3 ] && sed -i "s/<\/title>/ | $3&/" $FOLDER/$FILE
+[ "$#" -ge 3 ] &&
+  sed -i "s/<\/title>/ | $3&/" $FOLDER/$FILE
 
 echo "Created page $FOLDER/$FILE"
 rm $RAMTMP

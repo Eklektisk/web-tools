@@ -1,7 +1,7 @@
 Web-Tools
 ====================
 
-This contains all of the bash scripts I use to modify my website. This
+This contains all of the shell scripts I use to modify my website. This
 includes creating/modifying templates, adding pages, and updating my
 blog.
 
@@ -25,11 +25,8 @@ deleted at anytime.
 
 ## Setup ##
 There are two setup scripts provided:
-* `setup` will create the basic folders and files this script needs to function properly
-* `setup_rss` will create the necessary files and folders for the blog system as advertised above
-
-If you are able to, please read both scripts before running them to see
-what directories and files they are creating!
+* `setup` will create the core folders and files
+* `setup_rss` will create the core files and folders for a blog system
 
 ## Creating a website ##
 ### Layout ###
@@ -45,13 +42,14 @@ locally.
 #### Pages ####
 The pages folder contains all content for the website. This only
 includes page-specific information. This content will later be inserted
-into your templates.
+into your templates. Tabbing is automatically handled, so there is no
+need to manually indent anything.
 
 #### Testing ####
 The testing folder contains templated web pages that can be viewed
 locally. This takes content from your pages folder and inserts it into
-the testing template. This is useful for testing a page before
-publishing it.
+the testing template. This is useful for checking how a page looks
+before publishing it.
 
 #### Production ####
 The production folder contains templated web pages to be uploaded to the
@@ -115,7 +113,7 @@ HTMLcodes.
 #### push\_post ####
 Usage:
 ```bash
-./push_post <pages/post>
+./push_post <pages/post/*>
 ```
 This provides a wrapper for `gen_page` that pushes blog posts to the
 production folder. This also gives the option to update the blog index

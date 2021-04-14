@@ -1,23 +1,34 @@
-#!/bin/bash
+#!/bin/sh
 
 while [ -z "$TITLE" ]; do
-  read -p "Enter post title: " TITLE
+  read "Enter post title: " TITLE
+  echo
 done
 
-FILENAME="pages/posts/$(sed 's/./\L&/g; s/[^a-z0-9 -]/_/g; s/ /_/g; s/_\+/_/g; s/^_\+//; s/_\+$//;' <<< "$TITLE").html"
+CLEAN_TITLE="$(echo "$TITLE" | sed 's/./\L&/g; \
+s/[^a-z0-9 -]/_/g; \
+s/ /_/g; \
+s/_\+/_/g; \
+s/^_\+//; \
+s/_\+$//;')"
+
+FILENAME="pages/posts/${CLEAN_TITLE}.html"
 
 if [ -f "$FILENAME" ]; then
-  read -p "Post \"$TITLE\" already exists; overwrite it? [y/N] " OVERWRITE
+  read "Post \"$TITLE\" already exists; overwrite it? [y/N] " OVERWRITE
+  echo
+
   case $OVERWRITE in
     [Yy]* ) ;;
     * ) exit 0 ;;
   esac
 fi
 
-echo "<h2>$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$TITLE")</h2>
-" > "$FILENAME"
+echo "<h2>$(./encode_text "$TITLE")</h2>" > "$FILENAME"
 
-read -p "Post \"$TITLE\" created, edit post? [Y/n] " EDIT_CONFIRM
+read "Post \"$TITLE\" created, edit post? [Y/n] " EDIT_CONFIRM
+echo
+
 case $EDIT_CONFIRM in
   [Nn]* ) exit 0 ;;
   * )

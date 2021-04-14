@@ -1,16 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
 BASE_URL='https://eklektiskiscoding.xyz'
 
-function create_page() {
+create_page() {
   TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
   ./unsafe_gen_page "$1" "templates/base_production.html" "$TITLE"
 }
 
-function add_to_blog() {
+add_to_blog() {
   NAME="$(basename $1)"
   DIR="$(dirname $1 | sed 's/^pages\/\?//')"
-  [[ -z "$DIR" ]] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
+  [ -z "$DIR" ] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
 
   HEADER="$(date +"%B %Y")"
   DATE="$(date +"%Y %b %d")"
@@ -19,40 +19,50 @@ function add_to_blog() {
   RAMTMP=$(mktemp)
 
   if [ -z "$(grep "<h2>$HEADER</h2>" pages/blog.html)" ]; then
-    echo -e "<h2>$HEADER</h2>\n<ul>\n\t<!-- $HEADER -->\n</ul>" > $RAMTMP
+    echo "<h2>$HEADER</h2>
+<ul>
+	<!-- $HEADER -->
+</ul>" > $RAMTMP
     sed -i "/<!-- wt -->/r $RAMTMP" pages/blog.html
   fi
   
-  echo -e "\t<li>$DATE - <a href=\"/$(sed 's/\.html$//g' <<< $FILENAME)\">$TITLE</a></li>" > $RAMTMP
+  echo "	<li>$DATE - <a href="'"'"/$(echo "$FILENAME" |
+    sed 's/\.html$//g')\">$TITLE</a></li>" > $RAMTMP
+
   sed -i "/<!-- $HEADER -->/r $RAMTMP" pages/blog.html
 
   rm $RAMTMP
 
-  ./unsafe_gen_page "pages/blog.html" "templates/base_production.html" "Blog"
+  ./unsafe_gen_page \
+    "pages/blog.html" "templates/base_production.html" "Blog"
 }
 
-function insert_tag() {
+insert_tag() {
   # tag_name description indents new_line
 
   TAB='  '
-  [ "$4" -eq 1 ] && LINE="<$1>\n$(echo -e "$2" | sed "s/.*/$TAB&/g")\n</$1>" || LINE="<$1>$2</$1>"
+  [ "$4" -eq 1 ] && LINE="<$1>\n$(echo "$2" | sed "s/.*/$TAB&/g")
+</$1>" || LINE="<$1>$2</$1>"
 
-  echo -e "$LINE" | sed "s/.*/$(for (( i = 0; i < $3; ++i )); do printf "$TAB"; done)&/"
+  echo "$LINE" | sed "s/.*/$(for (( i = 0; i < $3; ++i )); do
+   printf "$TAB"; done)&/"
 }
 
-function add_to_rss() {
+add_to_rss() {
   NAME="$(basename $1)"
   DIR="$(dirname $1 | sed 's/^pages\/\?//')"
-  [[ -z "$DIR" ]] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
+  [ -z "$DIR" ] && FILENAME="$NAME" || FILENAME="$DIR/$NAME"
 
   TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
-  URL="$BASE_URL/$(sed 's/\.html$//g' <<< $FILENAME)"
+  URL="$BASE_URL/$(echo "$FILENAME" | sed 's/\.html$//g')"
   DATE="$(date +'%a, %d %b %Y %H:%M:%S %z')"
-  DESCRIPTION="<![CDATA[\n$(tail -n+2 $1 | sed 's/.*/  &/g; /^  $/d')\n]]>"
+  DESCRIPTION="<![CDATA[
+$(tail -n+2 $1 | sed 's/.*/  &/g; /^  $/d')
+]]>"
 
   RAMTMP="$(mktemp)"
 
-  echo -e "$(insert_tag "item" "$(insert_tag "title" "$TITLE" 0 0)
+  echo "$(insert_tag "item" "$(insert_tag "title" "$TITLE" 0 0)
 $(insert_tag "guid" "$URL" 0 1)
 $(insert_tag "pubDate" "$DATE" 0 0)
 $(insert_tag "description" "$DESCRIPTION" 0 1)" 2 1)" > $RAMTMP
@@ -67,7 +77,9 @@ if [ "$#" -eq 0 ]; then
 else
   create_page $1
 
-  read -p "Update blog? [y/N]: " UPDATE
+  read "Update blog? [y/N]: " UPDATE
+  echo
+
   case "$UPDATE" in
     [Yy]*) add_to_blog "$1" && add_to_rss "$1" ;;
     *) ;;

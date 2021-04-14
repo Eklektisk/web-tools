@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-function create() {
+create() {
   # folder directory name
-  [[ -z "$2" ]] && FILE="$NAME" || FILE="$DIR/$NAME"
+  [ -z "$2" ] && FILE="$NAME" || FILE="$DIR/$NAME"
 
   [ -d "$1/$2" ] && mkdir -p "$1/$2"
   cp -r "pages/$FILE" "$1/$FILE"
@@ -32,7 +32,8 @@ case "$2" in
     echo '  3: both'
 
   while true; do
-    read -p "Choose an option: " REF_OPTION
+    read "Choose an option: " REF_OPTION
+    echo
     
     case $REF_OPTION in
       '1') ;;

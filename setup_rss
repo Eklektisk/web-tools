@@ -1,18 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 
 mkdir pages/posts
 mkdir production/posts
 
-read -p 'Enter a title for your blog: ' TITLE
-read -p 'Enter a description for your blog: ' DESCRIPTION
-read -p 'Enter the domain name for your website: ' URL
+read 'Enter a title for your blog: ' TITLE
+echo
+
+read 'Enter a description for your blog: ' DESCRIPTION
+echo
+
+read 'Enter the domain name for your website: ' URL
+echo
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
   <channel>
-    <title>$(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$TITLE")</title>
+    <title>$(echo "$TITLE" |
+    sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g')</title>
     <description>
-      $(sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g' <<< "$DESCRIPTION")
+      $(echo "$DESCRIPTION" |
+      sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g')
     </description>
     <language>en-us</language>
     <link>https://$URL/rss.xml</link>

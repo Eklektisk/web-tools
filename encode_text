@@ -1,0 +1,15 @@
+#!/bin/sh
+
+[ "$#" -eq 0 ] &&
+  echo 'Usage: ./encode_text [string to encode]' &&
+  exit 1
+
+echo "$@" | sed '
+  s/&/\&amp;/g;
+  s/</\&lt;/g;
+  s/>/\&rt;/g;
+  s/"/\&quot;/g;
+  s/'"'"'/\&#39;/g'
+
+exit 0
+

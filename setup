@@ -1,11 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
 mkdir pages
 mkdir templates
 mkdir testing
 mkdir production
 
-read -p 'Enter a title for your page: ' TITLE
+read 'Enter a title for your page: ' TITLE
+echo
 
 echo "<!DOCTYPE html>
 <html lang=\"en-us\">
@@ -43,15 +44,19 @@ echo "<!DOCTYPE html>
 
 touch pages/style.css
 
-echo ''
-read -p 'Do you want to add a blog now? [y/N] ' ADD_RSS
+echo
+read 'Do you want to add a blog now? [y/N] ' ADD_RSS
+echo
+
 case "$ADD_RSS" in
   [Yy]*) echo ''; ./setup_rss ;;
   *) ;;
 esac
 
-echo ''
-read -p 'Do you want to delete the example folder? [Y/n] ' DELETE_EXAMPLE
+echo
+read 'Do you want to delete the example folder? [Y/n] ' DELETE_EXAMPLE
+echo
+
 case "$DELETE_EXAMPLE" in
   [Nn]*) ;;
   *) rm -r example/ ;;
@@ -59,7 +64,8 @@ esac
 
 echo '
 Basic configuration is set up!
-Before continuing, make sure you have read README.md to understand how this workspace is currently configured and how to modify it.'
+Before continuing, make sure you have read README.md to understand how \
+this workspace is currently configured and how to modify it.'
 
 exit 0
 
