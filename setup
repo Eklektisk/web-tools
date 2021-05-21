@@ -5,7 +5,8 @@ mkdir templates
 mkdir testing
 mkdir production
 
-read 'Enter a title for your page: ' TITLE
+printf 'Enter a title for your page: '
+read TITLE
 echo
 
 echo "<!DOCTYPE html>
@@ -45,7 +46,8 @@ echo "<!DOCTYPE html>
 touch pages/style.css
 
 echo
-read 'Do you want to add a blog now? [y/N] ' ADD_RSS
+printf 'Do you want to add a blog now? [y/N] '
+read ADD_RSS
 echo
 
 case "$ADD_RSS" in
@@ -54,7 +56,8 @@ case "$ADD_RSS" in
 esac
 
 echo
-read 'Do you want to delete the example folder? [Y/n] ' DELETE_EXAMPLE
+printf 'Do you want to delete the example folder? [Y/n] '
+read DELETE_EXAMPLE
 echo
 
 case "$DELETE_EXAMPLE" in

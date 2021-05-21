@@ -1,7 +1,8 @@
 #!/bin/sh
 
 while [ -z "$TITLE" ]; do
-  read "Enter post title: " TITLE
+  printf 'Enter post title: '
+  read TITLE
   echo
 done
 
@@ -15,7 +16,8 @@ s/_\+$//;')"
 FILENAME="pages/posts/${CLEAN_TITLE}.html"
 
 if [ -f "$FILENAME" ]; then
-  read "Post \"$TITLE\" already exists; overwrite it? [y/N] " OVERWRITE
+  printf "Post \"$TITLE\" already exists; overwrite it? [y/N] "
+  read OVERWRITE
   echo
 
   case $OVERWRITE in
@@ -26,7 +28,8 @@ fi
 
 echo "<h2>$(./encode_text "$TITLE")</h2>" > "$FILENAME"
 
-read "Post \"$TITLE\" created, edit post? [Y/n] " EDIT_CONFIRM
+printf "Post \"$TITLE\" created, edit post? [Y/n] "
+read EDIT_CONFIRM
 echo
 
 case $EDIT_CONFIRM in

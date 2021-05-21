@@ -7,7 +7,7 @@ blog.
 
 This setup is currently configured for:
 * Handling static HTML files
-* A one-template website (working on fixing this issue)
+* A one-template website
 * Basic blog system
   * Index page
   * RSS feed
@@ -17,8 +17,9 @@ These scripts are meant to provide a basis for you to hack onto to suit
 your needs. While you can create a fully functioning site without
 modifying them, it may not be to your liking.
 
-Note that the default editor is currently set to neovim. If you want to
-use a different editor, see Customizing and Hacking.
+Note that the default editor (assuming `$EDITOR` or `$VISUAL` is not
+set) is currently set to vim. If you want to use a different editor, see
+Customizing and Hacking.
 
 An example setup is available in the examples folder. This folder can be
 deleted at anytime.
@@ -122,7 +123,7 @@ and the RSS feed.
 ## Customizing and Hacking ##
 All scripts provided are fairly small. As long as you have a basic
 understanding of bash/shell commands and chains, the scripts should be
-easy to read (with `push_post` being the longest at 79 lines).
+easy to read (with `push_post` being the longest at 96 lines).
 
 ### Creating New Templates ###
 Templates must be marked as \_testing.html or as \_production.html in

@@ -3,13 +3,16 @@
 mkdir pages/posts
 mkdir production/posts
 
-read 'Enter a title for your blog: ' TITLE
+printf 'Enter a title for your blog: '
+read TITLE
 echo
 
-read 'Enter a description for your blog: ' DESCRIPTION
+printf 'Enter a description for your blog: '
+read DESCRIPTION
 echo
 
-read 'Enter the domain name for your website: ' URL
+printf 'Enter the domain name for your website: '
+read DOMAIN
 echo
 
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
@@ -22,11 +25,13 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
       sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&rt;/g; s/"/\&quot;/g')
     </description>
     <language>en-us</language>
-    <link>https://$URL/rss.xml</link>
-    <atom:link href=\"https://$URL/rss.xml\" rel=\"self\" type=\"application/rss+xml\"/>
-    <!-- gen_posts -->
+    <link>https://$DOMAIN/rss.xml</link>
+    <atom:link href=\"https://$DOMAIN/rss.xml\" rel=\"self\" type=\"application/rss+xml\"/>
+    <!-- wt -->
     </channel>
 </rss>" > production/rss.xml
+
+sed -i 's/example\.com/'"$DOMAIN"'/g' push_post
 
 echo "<p>You can <a href=\"/rss.xml\">subscribe to this blog</a> by adding the RSS link to your preferred reader.</p>
 <!-- wt -->" > pages/blog.html

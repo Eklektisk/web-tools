@@ -32,7 +32,8 @@ case "$2" in
     echo '  3: both'
 
   while true; do
-    read "Choose an option: " REF_OPTION
+    printf 'Choose an option: '
+    read REF_OPTION
     echo
     
     case $REF_OPTION in

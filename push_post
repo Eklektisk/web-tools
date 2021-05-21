@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE_URL='https://eklektiskiscoding.xyz'
+BASE_URL='https://example.com'
 
 create_page() {
   TITLE="$(head -n 1 $1 | sed 's/<\/\?h2>//g')"
@@ -35,17 +35,21 @@ add_to_blog() {
 
   ./unsafe_gen_page \
     "pages/blog.html" "templates/base_production.html" "Blog"
+
+  return 0
 }
 
 insert_tag() {
   # tag_name description indents new_line
 
   TAB='  '
-  [ "$4" -eq 1 ] && LINE="<$1>\n$(echo "$2" | sed "s/.*/$TAB&/g")
-</$1>" || LINE="<$1>$2</$1>"
+  ADD_TAB="$(for i in {0..$(($3 + 1))}; do printf "$TAB"; done)"
 
-  echo "$LINE" | sed "s/.*/$(for (( i = 0; i < $3; ++i )); do
-   printf "$TAB"; done)&/"
+  [ "$4" -eq 1 ] &&
+    LINE="<$1>\n$(echo "$2" | awk "$(./add_tabs "$TAB")")\n</$1>" ||
+    LINE="<$1>$2</$1>"
+
+  echo "$LINE" | awk "$(./add_tabs "$TAB")"
 }
 
 add_to_rss() {
@@ -57,7 +61,7 @@ add_to_rss() {
   URL="$BASE_URL/$(echo "$FILENAME" | sed 's/\.html$//g')"
   DATE="$(date +'%a, %d %b %Y %H:%M:%S %z')"
   DESCRIPTION="<![CDATA[
-$(tail -n+2 $1 | sed 's/.*/  &/g; /^  $/d')
+$(tail -n+2 $1 | awk "$(./add_tabs '  ')" | sed '/^ *$/d')
 ]]>"
 
   RAMTMP="$(mktemp)"
@@ -67,7 +71,7 @@ $(insert_tag "guid" "$URL" 0 1)
 $(insert_tag "pubDate" "$DATE" 0 0)
 $(insert_tag "description" "$DESCRIPTION" 0 1)" 2 1)" > $RAMTMP
 
-  sed -i "/<!-- gen_posts -->/r $RAMTMP" "production/rss.xml"
+  sed -i "/<!-- wt -->/r $RAMTMP" "production/rss.xml"
   rm $RAMTMP
 }
 
@@ -77,7 +81,8 @@ if [ "$#" -eq 0 ]; then
 else
   create_page $1
 
-  read "Update blog? [y/N]: " UPDATE
+  printf "Update blog? [y/N]: "
+  read UPDATE
   echo
 
   case "$UPDATE" in

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ "$#" -ge 3] &&
+[ "$#" -ge 3 ] &&
   exec ./unsafe_gen_page "$1" "$2" "$(./encode_text "$3")" ||
   exec ./unsafe_gen_page "$1" "$2"
 

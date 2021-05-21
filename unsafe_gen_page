@@ -10,24 +10,7 @@ TAB="$(grep "wt" $2 | sed -e 's/<!-- wt -->.*//')"
   FOLDER='testing'
 
 RAMTMP=$(mktemp)
-awk 'BEGIN { add_tab=1 }
-
-NR > 1 {
-  if (line != "" && add_tab == 1)
-    print "'"$TAB"'"line;
-  else
-    print line;
-}
-{
-  if (line ~ /.*<pre>.*/) {
-    add_tab=0;
-  } else if (line ~ /.*<\/pre>.*/) {
-    add_tab=1;
-  }
-}
-{ line=$0; }
-
-END {print $0}' $1 > $RAMTMP
+awk "$(./add_tabs "$TAB")" $1 > $RAMTMP
 
 mkdir -p $FOLDER/$DIR
 cp $2 $FOLDER/$FILE

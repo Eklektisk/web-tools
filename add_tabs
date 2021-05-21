@@ -1,0 +1,31 @@
+#!/bin/sh
+# add_tabs <tab>
+
+# This is meant to be used in conjunction with awk to add tabbing to
+# any file. It will add <tab> to the start of each line, provided that
+# it is not between a <pre>...</pre> tag
+
+[ "$#" -eq 0 ] &&
+  echo 'Usage: awk "$(add_tabs <tab>)"' && exit 1
+
+echo 'BEGIN { add_tab=1 }
+
+NR > 1 {
+  if (line != "" && add_tab == 1)
+    print "'"$1"'"line;
+  else
+    print line;
+}
+{
+  if (line ~ /.*<pre>.*/) {
+    add_tab=0;
+  } else if (line ~ /.*<\/pre>.*/) {
+    add_tab=1;
+  }
+}
+{ line=$0; }
+
+END {print "'"$1"'"$0}'
+
+exit 0
+
