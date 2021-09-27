@@ -3,9 +3,9 @@
 run_update() {
   for FILE in $(find "$1" -iname '*.html'); do
     [ ! -z "$(grep '<title>.*|' $FILE)" ] &&
-      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$2" "$(
+      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$1" "$(
         sed -n 's/.*<title>.*| \(.*\)<\/title>.*/\1/p;' $FILE)" ||
-      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$2"
+      ./gen_page "$(echo "$FILE" | sed "s/$1/pages/")" "$1"
   done
 }
 
@@ -29,6 +29,6 @@ while true; do
   break
 done
 
-[ "$((REF_OPTION & 1))" -ne 0 ] && run_update 'testing' 'templates/base_testing.html'
-[ "$((REF_OPTION & 2))" -ne 0 ] && run_update 'production' 'templates/base_production.html'
+[ "$((REF_OPTION & 1))" -ne 0 ] && run_update 'testing'
+[ "$((REF_OPTION & 2))" -ne 0 ] && run_update 'production'
 

@@ -26,7 +26,23 @@ if [ -f "$FILENAME" ]; then
   esac
 fi
 
-echo "<h2>$(./encode_text "$TITLE")</h2>" > "$FILENAME"
+printf 'Enter template name: '
+read TEMPLATE
+echo
+
+if [ -z "$TEMPLATE" ]; then
+  TEMPLATE="base"
+  printf 'No template supplied, defaulting to "base"'
+fi
+
+[[ -f "templates/${TEMPLATE}_testing.html" ]]
+  && printf "Could not find testing variant for \"$TEMPLATE\"" > &2
+
+[[ -f "templates/${TEMPLATE}_production.html" ]]
+  && printf "Could not find production variant for \"$TEMPLATE\"" > &2
+
+echo "<!-- $TEMPLATE -->" > "$FILENAME"
+echo "<h2>$(./encode_text "$TITLE")</h2>" >> "$FILENAME"
 
 printf "Post \"$TITLE\" created, edit post? [Y/n] "
 read EDIT_CONFIRM

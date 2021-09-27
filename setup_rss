@@ -33,7 +33,8 @@ echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 
 sed -i 's/example\.com/'"$DOMAIN"'/g' push_post
 
-echo "<p>You can <a href=\"/rss.xml\">subscribe to this blog</a> by adding the RSS link to your preferred reader.</p>
+echo "<!-- base -->
+<p>You can <a href=\"/rss.xml\">subscribe to this blog</a> by adding the RSS link to your preferred reader.</p>
 <!-- wt -->" > pages/blog.html
 
 echo 'Blog system and RSS feed set up!'

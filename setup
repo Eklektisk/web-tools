@@ -45,6 +45,9 @@ echo "<!DOCTYPE html>
 
 touch pages/style.css
 
+echo '<!-- base -->
+<h1>Welcome to my website!</h1>' > pages/index.html
+
 echo
 printf 'Do you want to add a blog now? [y/N] '
 read ADD_RSS

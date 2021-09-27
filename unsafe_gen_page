@@ -4,23 +4,26 @@ NAME="$(basename $1)"
 DIR="$(dirname $1 | sed 's/^pages\/\?//')"
 [ -z "$DIR" ] && FILE="$NAME" || FILE="$DIR/$NAME"
 
-TAB="$(grep "wt" $2 | sed -e 's/<!-- wt -->.*//')"
+TEMPLATE="templates/$(sed -n 's/<!-- \(.*\) -->/\1/;1p' "$1")_$2.html"
+
 [ -z "$(echo "$2" | grep "testing")" ] &&
   FOLDER='production' ||
   FOLDER='testing'
 
+TAB="$(grep "wt" "$TEMPLATE" | sed -e 's/<!-- wt -->.*//')"
+
 RAMTMP=$(mktemp)
-awk "$(./add_tabs "$TAB")" $1 > $RAMTMP
+awk "$(./add_tabs "$TAB")" "$1" | tail -n+2 > "$RAMTMP"
 
-mkdir -p $FOLDER/$DIR
-cp $2 $FOLDER/$FILE
+mkdir -p "$FOLDER/$DIR"
+cp "$TEMPLATE" "$FOLDER/$FILE"
 
-sed -i "/<!-- wt -->/r $RAMTMP" $FOLDER/$FILE
-sed -i '/<!-- wt -->/d' $FOLDER/$FILE
+sed -i "/<!-- wt -->/r $RAMTMP" "$FOLDER/$FILE"
+sed -i '/<!-- wt -->/d' "$FOLDER/$FILE"
 
 [ "$#" -ge 3 ] &&
-  sed -i "s/<\/title>/ | $3&/" $FOLDER/$FILE
+  sed -i "s/<\/title>/ | $3&/" "$FOLDER/$FILE"
 
 echo "Created page $FOLDER/$FILE"
-rm $RAMTMP
+rm "$RAMTMP"
 
